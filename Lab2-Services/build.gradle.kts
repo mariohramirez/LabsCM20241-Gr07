@@ -116,6 +116,11 @@ dependencies {
 
     implementation(libs.coil.kt.compose)
 
+    //Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    //ConverterGSon
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.runner)

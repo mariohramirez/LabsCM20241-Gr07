@@ -20,11 +20,24 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.lifecycle.lifecycleScope
+import com.example.jetsnack.data.RetrofitServiceFactory
+import kotlinx.coroutines.launch
+import  android.util.Log
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        val service = RetrofitServiceFactory.makeRetrofitService()
+
+        lifecycleScope.launch{
+            val snacks = service.listSnacks()
+            Log.d("MiEtiqueta", snacks.toString())
+        }
+
         setContent { JetsnackApp() }
     }
 }
