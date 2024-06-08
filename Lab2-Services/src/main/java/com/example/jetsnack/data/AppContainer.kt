@@ -1,11 +1,9 @@
 package com.example.jetsnack.data
 
-import com.example.jetsnack.model.Snack
-import com.example.jetsnack.model.SnackResult
+import com.example.jetsnack.network.SnacksAPIService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
 import java.security.KeyStore
 import java.security.SecureRandom
 import java.security.cert.CertificateException
@@ -15,13 +13,13 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 
-interface RetrofitService {
-
-
+interface AppContainer {
+    val snackRepository: SnackRepository
 }
 
-object RetrofitServiceFactory{
+class  DefaultAppContainer:AppContainer {
 
+    //URL a la cual se haran las peticiones get
     private val baseUrl:String = "https://demo7305796.mockable.io/"
 
     private fun getUnsafeOkHttpClient(): OkHttpClient {
@@ -76,11 +74,19 @@ object RetrofitServiceFactory{
         }
     }
 
-    fun makeRetrofitService(): RetrofitService{
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(getUnsafeOkHttpClient())
-            .build().create(RetrofitService::class.java)
+    //Builder para Retrofit
+    private val retrofit: Retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(getUnsafeOkHttpClient())
+        .build()
+
+    //Se crea un servicio para Retrofit, enviando las solicitudes HTTP por medio del service de APIS
+    private val retrofitService: SnacksAPIService by lazy {
+        retrofit.create(SnacksAPIService::class.java)
+    }
+
+    override val snackRepository:SnackRepository by lazy {
+        NetworkSnackRepository(retrofitService)
     }
 }

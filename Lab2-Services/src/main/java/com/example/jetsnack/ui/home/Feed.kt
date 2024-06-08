@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
+import com.example.jetsnack.ui.SnackViewModel
 import com.example.jetsnack.ui.components.FilterBar
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackScaffold
@@ -56,12 +57,13 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
 fun Feed(
+    viewModel: SnackViewModel,
     onSnackClick: (Long) -> Unit,
     onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val snackCollections = remember { SnackRepo.getSnacks() }
-    val filters = remember { SnackRepo.getFilters() }
+    val snackCollections = remember { SnackRepo(viewModel).getSnacks() }
+    val filters = remember { SnackRepo(viewModel).getFilters() }
     JetsnackScaffold(
         bottomBar = {
             JetsnackBottomBar(
@@ -73,6 +75,7 @@ fun Feed(
         modifier = modifier
     ) { paddingValues ->
         Feed(
+            viewModel,
             snackCollections,
             filters,
             onSnackClick,
@@ -83,6 +86,7 @@ fun Feed(
 
 @Composable
 private fun Feed(
+    viewModel: SnackViewModel,
     snackCollections: List<SnackCollection>,
     filters: List<Filter>,
     onSnackClick: (Long) -> Unit,
@@ -90,7 +94,7 @@ private fun Feed(
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
         Box {
-            SnackCollectionList(snackCollections, filters, onSnackClick)
+            SnackCollectionList(viewModel, snackCollections, filters, onSnackClick)
             DestinationBar()
         }
     }
@@ -98,6 +102,7 @@ private fun Feed(
 
 @Composable
 private fun SnackCollectionList(
+    viewModel: SnackViewModel,
     snackCollections: List<SnackCollection>,
     filters: List<Filter>,
     onSnackClick: (Long) -> Unit,
@@ -136,17 +141,8 @@ private fun SnackCollectionList(
         exit = slideOutVertically() + shrinkVertically() + fadeOut()
     ) {
         FilterScreen(
+            viewModel = viewModel,
             onDismiss = { filtersVisible = false }
         )
-    }
-}
-
-@Preview("default")
-@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview("large font", fontScale = 2f)
-@Composable
-fun HomePreview() {
-    JetsnackTheme {
-        Feed(onSnackClick = { }, onNavigateToRoute = { })
     }
 }

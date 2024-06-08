@@ -16,12 +16,16 @@
 
 package com.example.jetsnack.ui.home.cart
 
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetsnack.R
+import com.example.jetsnack.data.SnackRepository
 import com.example.jetsnack.model.OrderLine
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.model.SnackbarManager
+import com.example.jetsnack.ui.SnackViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -85,9 +89,10 @@ class CartViewModel(
      * Factory for CartViewModel that takes SnackbarManager as a dependency
      */
     companion object {
+        @Composable
         fun provideFactory(
             snackbarManager: SnackbarManager = SnackbarManager,
-            snackRepository: SnackRepo = SnackRepo
+            snackRepository: SnackRepo = SnackRepo(viewModel = viewModel(factory = SnackViewModel.Factory))
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {

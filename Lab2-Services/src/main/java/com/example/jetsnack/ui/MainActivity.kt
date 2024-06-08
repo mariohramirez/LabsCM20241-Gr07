@@ -31,13 +31,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        val service = RetrofitServiceFactory.makeRetrofitService()
-
-        lifecycleScope.launch{
-            val snacks = service.listSnacks()
-            Log.d("MiEtiqueta", snacks.toString())
-        }
-
         setContent { JetsnackApp() }
     }
 }

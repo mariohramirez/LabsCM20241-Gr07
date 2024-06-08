@@ -59,6 +59,7 @@ import com.example.jetsnack.model.SearchRepo
 import com.example.jetsnack.model.SearchSuggestionGroup
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackRepo
+import com.example.jetsnack.ui.SnackViewModel
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -69,10 +70,11 @@ import com.example.jetsnack.ui.utils.mirroringBackIcon
 
 @Composable
 fun Search(
+    viewModel: SnackViewModel,
     onSnackClick: (Long) -> Unit,
     onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
-    state: SearchState = rememberSearchState()
+    state: SearchState = rememberSearchState(viewModel)
 ) {
     JetsnackScaffold(
         bottomBar = {
@@ -99,7 +101,7 @@ fun Search(
 
                 LaunchedEffect(state.query.text) {
                     state.searching = true
-                    state.searchResults = SearchRepo.search(state.query.text)
+                    state.searchResults = SearchRepo.search(state.query.text, viewModel)
                     state.searching = false
                 }
                 when (state.searchDisplay) {
@@ -128,14 +130,15 @@ enum class SearchDisplay {
 
 @Composable
 private fun rememberSearchState(
+    viewModel: SnackViewModel,
     query: TextFieldValue = TextFieldValue(""),
     focused: Boolean = false,
     searching: Boolean = false,
     categories: List<SearchCategoryCollection> = SearchRepo.getCategories(),
     suggestions: List<SearchSuggestionGroup> = SearchRepo.getSuggestions(),
-    filters: List<Filter> = SnackRepo.getFilters(),
     searchResults: List<Snack> = emptyList()
 ): SearchState {
+    val filters = SnackRepo(viewModel).getFilters()
     return remember {
         SearchState(
             query = query,

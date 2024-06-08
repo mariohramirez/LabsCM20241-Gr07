@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2020 The Android Open Source Project
  *
@@ -17,6 +18,7 @@
 package com.example.jetsnack.model
 
 import androidx.compose.runtime.Immutable
+import com.example.jetsnack.ui.SnackViewModel
 
 @Immutable
 data class SnackCollection(
@@ -31,9 +33,67 @@ enum class CollectionType { Normal, Highlight }
 /**
  * A fake repo
  */
-object SnackRepo {
+class SnackRepo(private var viewModel: SnackViewModel) {
+
+    private val tastyTreats = SnackCollection(
+        id = 1L,
+        name = "Android's picks",
+        type = CollectionType.Highlight,
+        snacks = viewModel.getSnacks().subList(0, 13)
+    )
+
+    private val popular = SnackCollection(
+        id = 2L,
+        name = "Popular on Jetsnack",
+        snacks = viewModel.getSnacks().subList(14, 19)
+    )
+
+    private val wfhFavs = tastyTreats.copy(
+        id = 3L,
+        name = "WFH favourites"
+    )
+
+    private val newlyAdded = popular.copy(
+        id = 4L,
+        name = "Newly Added"
+    )
+
+    private val exclusive = tastyTreats.copy(
+        id = 5L,
+        name = "Only on Jetsnack"
+    )
+
+    private val also = tastyTreats.copy(
+        id = 6L,
+        name = "Customers also bought"
+    )
+
+    private val inspiredByCart = tastyTreats.copy(
+        id = 7L,
+        name = "Inspired by your cart"
+    )
+
+    private val snackCollections = listOf(
+        tastyTreats,
+        popular,
+        wfhFavs,
+        newlyAdded,
+        exclusive
+    )
+
+    private val related = listOf(
+        also,
+        popular
+    )
+
+    private val cart = listOf(
+        OrderLine(viewModel.getSnacks()[4], 2),
+        OrderLine(viewModel.getSnacks()[6], 3),
+        OrderLine(viewModel.getSnacks()[8], 1)
+    )
+
     fun getSnacks(): List<SnackCollection> = snackCollections
-    fun getSnack(snackId: Long) = snacks.find { it.id == snackId }!!
+    fun getSnack(snackId: Long) = viewModel.getSnacks().find { it.id == snackId }!!
     fun getRelated(@Suppress("UNUSED_PARAMETER") snackId: Long) = related
     fun getInspiredByCart() = inspiredByCart
     fun getFilters() = filters
@@ -48,63 +108,6 @@ object SnackRepo {
 /**
  * Static data
  */
-
-private val tastyTreats = SnackCollection(
-    id = 1L,
-    name = "Android's picks",
-    type = CollectionType.Highlight,
-    snacks = snacks.subList(0, 13)
-)
-
-private val popular = SnackCollection(
-    id = 2L,
-    name = "Popular on Jetsnack",
-    snacks = snacks.subList(14, 19)
-)
-
-private val wfhFavs = tastyTreats.copy(
-    id = 3L,
-    name = "WFH favourites"
-)
-
-private val newlyAdded = popular.copy(
-    id = 4L,
-    name = "Newly Added"
-)
-
-private val exclusive = tastyTreats.copy(
-    id = 5L,
-    name = "Only on Jetsnack"
-)
-
-private val also = tastyTreats.copy(
-    id = 6L,
-    name = "Customers also bought"
-)
-
-private val inspiredByCart = tastyTreats.copy(
-    id = 7L,
-    name = "Inspired by your cart"
-)
-
-private val snackCollections = listOf(
-    tastyTreats,
-    popular,
-    wfhFavs,
-    newlyAdded,
-    exclusive
-)
-
-private val related = listOf(
-    also,
-    popular
-)
-
-private val cart = listOf(
-    OrderLine(snacks[4], 2),
-    OrderLine(snacks[6], 3),
-    OrderLine(snacks[8], 1)
-)
 
 @Immutable
 data class OrderLine(

@@ -49,7 +49,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.Snack
-import com.example.jetsnack.model.snacks
+import com.example.jetsnack.ui.SnackViewModel
 import com.example.jetsnack.ui.components.FilterBar
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
@@ -216,21 +216,5 @@ fun NoResults(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-    }
-}
-
-@Preview("default")
-@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview("large font", fontScale = 2f)
-@Composable
-private fun SearchResultPreview() {
-    JetsnackTheme {
-        JetsnackSurface {
-            SearchResult(
-                snack = snacks[0],
-                onSnackClick = { },
-                showDivider = false
-            )
-        }
     }
 }

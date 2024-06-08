@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2020 The Android Open Source Project
  *
@@ -67,6 +68,7 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
+import com.example.jetsnack.ui.SnackViewModel
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
@@ -93,11 +95,12 @@ private val HzPadding = Modifier.padding(horizontal = 24.dp)
 
 @Composable
 fun SnackDetail(
+    viewModel: SnackViewModel,
     snackId: Long,
     upPress: () -> Unit
 ) {
-    val snack = remember(snackId) { SnackRepo.getSnack(snackId) }
-    val related = remember(snackId) { SnackRepo.getRelated(snackId) }
+    val snack = remember(snackId) { SnackRepo(viewModel).getSnack(snackId) }
+    val related = remember(snackId) { SnackRepo(viewModel).getRelated(snackId) }
 
     Box(Modifier.fillMaxSize()) {
         val scroll = rememberScrollState(0)
@@ -369,18 +372,5 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                 }
             }
         }
-    }
-}
-
-@Preview("default")
-@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview("large font", fontScale = 2f)
-@Composable
-private fun SnackDetailPreview() {
-    JetsnackTheme {
-        SnackDetail(
-            snackId = 1L,
-            upPress = { }
-        )
     }
 }

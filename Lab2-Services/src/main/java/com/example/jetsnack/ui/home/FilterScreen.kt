@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2021 The Android Open Source Project
  *
@@ -57,23 +58,25 @@ import androidx.compose.ui.window.Dialog
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.SnackRepo
+import com.example.jetsnack.ui.SnackViewModel
 import com.example.jetsnack.ui.components.FilterChip
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 @Composable
 fun FilterScreen(
+    viewModel: SnackViewModel,
     onDismiss: () -> Unit
 ) {
-    var sortState by remember { mutableStateOf(SnackRepo.getSortDefault()) }
+    var sortState by remember { mutableStateOf(SnackRepo(viewModel).getSortDefault()) }
     var maxCalories by remember { mutableFloatStateOf(0f) }
-    val defaultFilter = SnackRepo.getSortDefault()
+    val defaultFilter = SnackRepo(viewModel).getSortDefault()
 
     Dialog(onDismissRequest = onDismiss) {
 
-        val priceFilters = remember { SnackRepo.getPriceFilters() }
-        val categoryFilters = remember { SnackRepo.getCategoryFilters() }
-        val lifeStyleFilters = remember { SnackRepo.getLifeStyleFilters() }
+        val priceFilters = remember { SnackRepo(viewModel).getPriceFilters() }
+        val categoryFilters = remember { SnackRepo(viewModel).getCategoryFilters() }
+        val lifeStyleFilters = remember { SnackRepo(viewModel).getLifeStyleFilters() }
         JetsnackScaffold(
             topBar = {
                 TopAppBar(
@@ -123,6 +126,7 @@ fun FilterScreen(
                     .padding(horizontal = 24.dp, vertical = 16.dp),
             ) {
                 SortFiltersSection(
+                    viewModel = viewModel,
                     sortState = sortState,
                     onFilterChange = { filter ->
                         sortState = filter.name
@@ -171,10 +175,11 @@ fun FilterChipSection(title: String, filters: List<Filter>) {
 }
 
 @Composable
-fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
+fun SortFiltersSection(viewModel: SnackViewModel, sortState: String, onFilterChange: (Filter) -> Unit) {
     FilterTitle(text = stringResource(id = R.string.sort))
     Column(Modifier.padding(bottom = 24.dp)) {
         SortFilters(
+            sortFilters = SnackRepo(viewModel).getSortFilters(),
             sortState = sortState,
             onChanged = onFilterChange
         )
@@ -183,7 +188,7 @@ fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
 
 @Composable
 fun SortFilters(
-    sortFilters: List<Filter> = SnackRepo.getSortFilters(),
+    sortFilters: List<Filter>,
     sortState: String,
     onChanged: (Filter) -> Unit
 ) {
@@ -265,12 +270,5 @@ fun SortOption(
                 tint = JetsnackTheme.colors.brand
             )
         }
-    }
-}
-@Preview("filter screen")
-@Composable
-fun FilterScreenPreview() {
-    JetsnackTheme {
-        FilterScreen(onDismiss = {})
     }
 }

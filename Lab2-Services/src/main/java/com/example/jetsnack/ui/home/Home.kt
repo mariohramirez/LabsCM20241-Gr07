@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.home
 
+import android.util.Log
 import androidx.annotation.FloatRange
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateColorAsState
@@ -69,6 +70,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.jetsnack.R
+import com.example.jetsnack.ui.SnackViewModel
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
@@ -76,18 +78,19 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import java.util.Locale
 
 fun NavGraphBuilder.addHomeGraph(
+    viewModel: SnackViewModel,
     onSnackSelected: (Long, NavBackStackEntry) -> Unit,
     onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     composable(HomeSections.FEED.route) { from ->
-        Feed(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
+        Feed(viewModel = viewModel, onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
     }
     composable(HomeSections.SEARCH.route) { from ->
-        Search(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
+        Search(viewModel = viewModel, onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
     }
     composable(HomeSections.CART.route) { from ->
-        Cart(onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
+        Cart(snackViewModel = viewModel, onSnackClick = { id -> onSnackSelected(id, from) }, onNavigateToRoute, modifier)
     }
     composable(HomeSections.PROFILE.route) {
         Profile(onNavigateToRoute, modifier)

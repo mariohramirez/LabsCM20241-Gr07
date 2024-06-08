@@ -17,6 +17,8 @@
 package com.example.jetsnack.model
 
 import androidx.compose.runtime.Immutable
+import androidx.lifecycle.AndroidViewModel
+import com.example.jetsnack.ui.SnackViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -28,8 +30,11 @@ object SearchRepo {
     fun getCategories(): List<SearchCategoryCollection> = searchCategoryCollections
     fun getSuggestions(): List<SearchSuggestionGroup> = searchSuggestions
 
-    suspend fun search(query: String): List<Snack> = withContext(Dispatchers.Default) {
+    //Se agrga el snackViewModel para obtener los snacks
+    suspend fun search(query: String, snackViewModel: SnackViewModel):
+            List<Snack> = withContext(Dispatchers.Default) {
         delay(200L) // simulate an I/O delay
+        val snacks = snackViewModel.getSnacks()
         snacks.filter { it.name.contains(query, ignoreCase = true) }
     }
 }

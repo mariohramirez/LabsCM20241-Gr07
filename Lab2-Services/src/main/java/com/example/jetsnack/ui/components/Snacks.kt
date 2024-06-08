@@ -62,7 +62,6 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.CollectionType
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
-import com.example.jetsnack.model.snacks
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.mirroringIcon
 
@@ -303,23 +302,6 @@ fun SnackImage(
             placeholder = painterResource(R.drawable.placeholder),
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
-        )
-    }
-}
-
-@Preview("default")
-@Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
-@Preview("large font", fontScale = 2f)
-@Composable
-fun SnackCardPreview() {
-    JetsnackTheme {
-        val snack = snacks.first()
-        HighlightSnackItem(
-            snack = snack,
-            onSnackClick = { },
-            index = 0,
-            gradient = JetsnackTheme.colors.gradient6_1,
-            scrollProvider = { 0f }
         )
     }
 }

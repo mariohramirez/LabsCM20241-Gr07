@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2020 The Android Open Source Project
  *
@@ -76,6 +77,7 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.OrderLine
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
+import com.example.jetsnack.ui.SnackViewModel
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackScaffold
@@ -94,13 +96,14 @@ import com.example.jetsnack.ui.utils.formatPrice
 
 @Composable
 fun Cart(
+    snackViewModel: SnackViewModel,
     onSnackClick: (Long) -> Unit,
     onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
+    viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory(snackRepository = SnackRepo(snackViewModel)))
 ) {
     val orderLines by viewModel.orderLines.collectAsStateWithLifecycle()
-    val inspiredByCart = remember { SnackRepo.getInspiredByCart() }
+    val inspiredByCart = remember { SnackRepo(snackViewModel).getInspiredByCart() }
     val jetsnackScaffoldState = rememberJetsnackScaffoldState()
     JetsnackScaffold(
         bottomBar = {
@@ -510,22 +513,5 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
                 )
             }
         }
-    }
-}
-
-@Preview("default")
-@Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
-@Preview("large font", fontScale = 2f)
-@Composable
-private fun CartPreview() {
-    JetsnackTheme {
-        Cart(
-            orderLines = SnackRepo.getCart(),
-            removeSnack = {},
-            increaseItemCount = {},
-            decreaseItemCount = {},
-            inspiredByCart = SnackRepo.getInspiredByCart(),
-            onSnackClick = {}
-        )
     }
 }
